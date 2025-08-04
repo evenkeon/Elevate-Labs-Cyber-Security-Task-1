@@ -1,72 +1,62 @@
+Vulnerability Assessment Summary of Network Scan
 
-Detailed Findings and Risk Assessment
+1.Router/Gateway (192.168.0.1)
+  – Open Port: 80/tcp (tcpwrapped)
+  – Risk Level: Low (management interface only)
 
-Scan Date: Mon Aug 4 20:45:26 2025
-Network Range: 192.168.0.113/24
-Scan Type: Aggressive scan (-A)
-Duration: 269.60 seconds
-Hosts Discovered: 5
+2.Host 192.168.0.100
+  – All 1,000 TCP ports filtered
+  – Status: Likely firewalled or offline; no services exposed
 
-Host 192.168.0.1 (Router/Gateway)
+3.Windows Devices (192.168.0.106 & 192.168.0.107)
+  – No open TCP ports detected
+  – Status: Appear hardened or offline
 
-Open Port: 80/tcp (tcpwrapped)
+4.Metasploitable2 VM (192.168.0.114)
+  – Overall Risk: Critical
+  – Key Vulnerable Services:
 
-Low risk; management interface only.
+FTP (vsftpd 2.3.4) on port 21/tcp – backdoor vulnerability (CVE-2011-2523) allowing root shell access
 
-Host 192.168.0.100
+SSH (OpenSSH 4.7p1) on port 22/tcp – CBC mode weaknesses and weak key algorithms
 
-All 1,000 TCP ports filtered
+Telnet on port 23/tcp – cleartext credentials transmission
 
-Likely firewalled or offline; no services exposed.
+SMTP (Postfix) on port 25/tcp – expired self-signed certificate and unauthenticated commands
 
-Hosts 192.168.0.106 and 192.168.0.107 (Windows devices)
+DNS (ISC BIND 9.4.2) on port 53/tcp – outdated software vulnerable to cache poisoning
 
-No open TCP ports detected
+HTTP (Apache 2.2.8) on port 80/tcp – end-of-life version with known exploits
 
-Appear hardened or offline
+RPC/RPCBind on port 111/tcp – exposed NFS and mount services
 
-Host 192.168.0.114 (Metasploitable2 VM) – Critical Risk
-Open services and associated vulnerabilities:
+Samba (3.0.20) on ports 139 and 445/tcp – remote code execution via the “username map script” (CVE-2007-2447)
 
-FTP (vsftpd 2.3.4) on 21/tcp – Backdoor vulnerability (CVE-2011-2523) spawns root shell
+rsh/execd on ports 512–514/tcp – legacy unencrypted remote shells
 
-SSH (OpenSSH 4.7p1) on 22/tcp – CBC mode weaknesses and weak key algorithms
+Java RMI on port 1099/tcp – remote class loading risk
 
-Telnet (Linux telnetd) on 23/tcp – Cleartext credentials
+Bindshell on port 1524/tcp – direct root shell access
 
-SMTP (Postfix smtpd) on 25/tcp – Expired self-signed cert, unauthenticated commands
+NFS on port 2049/tcp – unauthenticated file share
 
-DNS (ISC BIND 9.4.2) on 53/tcp – Outdated software vulnerable to cache poisoning
+FTP (ProFTPD 1.3.1) on port 2121/tcp – directory traversal and shell escape vulnerabilities
 
-HTTP (Apache 2.2.8) on 80/tcp – EOL version with known exploits
+MySQL (5.0.51a) on port 3306/tcp – privilege and authentication bypass (CVE-2008-4097, CVE-2012-2122)
 
-RPC/RPCBind on 111/tcp – Exposed NFS and mount services
+PostgreSQL (8.3) on port 5432/tcp – SQL injection via crafted filenames (CVE-2012-0868)
 
-Samba (3.0.20) on 139 & 445/tcp – “Username map script” RCE (CVE-2007-2447)
+VNC on port 5900/tcp – weak authentication and no encryption
 
-rsh/execd on 512–514/tcp – Legacy, unencrypted remote shells
+X11 on port 6000/tcp – potential GUI session exposure
 
-Java RMI on 1099/tcp – Remote class loading risk
+IRC (UnrealIRCd) on port 6667/tcp – known remote code execution flaws
 
-Bindshell on 1524/tcp – Direct root shell access
+AJP13 on port 8009/tcp – request smuggling and Ghostcat vulnerabilities
 
-NFS on 2049/tcp – Unauthenticated file share
+Tomcat (Apache-Coyote/1.1) on port 8180/tcp – outdated version allowing directory listing exploits
 
-FTP (ProFTPD 1.3.1) on 2121/tcp – Directory traversal and shell escapes
+Immediate mitigation is required for the Metasploitable2 VM to prevent exploitation.
 
-MySQL 5.0.51a on 3306/tcp – Privilege and auth bypass (CVE-2008-4097, CVE-2012-2122)
 
-PostgreSQL 8.3 on 5432/tcp – SQL injection via crafted filenames (CVE-2012-0868)
 
-VNC on 5900/tcp – Weak authentication, no encryption
-
-X11 on 6000/tcp – GUI session exposure if enabled
-
-IRC (UnrealIRCd) on 6667/tcp – Known remote code execution flaws
-
-AJP13 on 8009/tcp – Request smuggling and Ghostcat risks
-
-Tomcat (Apache-Coyote/1.1) on 8180/tcp – Outdated, directory listing exploits
-
-Overall Risk Assessment:
-The Metasploitable2 host exposes multiple critical and high-risk services, making it an immediate target for exploitation. Other hosts present minimal risk
